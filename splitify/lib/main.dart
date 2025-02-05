@@ -3,7 +3,7 @@ import 'package:splitify/utils/theme/theme.dart';
 import 'package:splitify/view/home_view.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MainApp()); 
 }
 
 class MainApp extends StatelessWidget {
