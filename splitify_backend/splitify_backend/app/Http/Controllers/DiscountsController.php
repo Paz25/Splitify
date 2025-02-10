@@ -8,43 +8,106 @@ use Illuminate\Http\Request;
 
 class DiscountsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        try {
+            $discounts = Discounts::all();
+            return response()->json([
+                "status" => true,
+                "message" => "Discounts obtained successfully",
+                "data"=> $discounts
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"=> false,
+                "message"=> $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show($id)
+    {
+        try {
+            $discounts = Discounts::findOrFail($id);
+            return response()->json([
+                "status"=> true,
+                "message"=> "Discount found successfully",
+                "data"=> $discounts
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"=> false,
+                "message"=> $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function store(Request $request)
     {
-        //
-    }
+        try {
+            $validatedData = $request->validate([
+                'nominal' => 'required|numeric|min:0.01',
+            ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Discounts $discounts)
-    {
-        //
-    }
+            $discounts = Discounts::create($validatedData);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Discounts $discounts)
-    {
-        //
+            return response()->json([
+                'status'=> true,
+                'message'=> 'Discount created successfully',
+                'data'=> $discounts
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                "status" => false,
+                "message" => $e->validator->errors()
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => false,
+                "message" => $e->getMessage()
+            ], status: 500);
+        }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Discounts $discounts)
+    
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $discount = Discounts::find($id);
+            $validatedData = $request->validate([
+                'nominal' => 'required|numeric|min:0.01',
+            ]);
+            $discount->update($validatedData);
+            return response()->json([
+                "status"=> true,
+                "message"=> "Discount updated successfully",
+                "data"=> $discount
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                "status" => false,
+                "message" => $e->validator->errors()
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => false,
+                "message" => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function destroy($id)
+    {
+        try {
+            $discount = Discounts::find($id);
+            $discount->delete();
+            return response()->json([
+                "status"=> true,
+                "message"=> "Discount deleted successfully",
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"=> false,
+                "message"=> $e->getMessage()
+            ],500);
+        }
     }
 }

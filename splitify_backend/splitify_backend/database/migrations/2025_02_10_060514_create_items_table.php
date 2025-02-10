@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-    * Run the migrations.
-    */
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('bill_id')->references('id')->on('bills')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
         });
     }
